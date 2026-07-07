@@ -18,7 +18,7 @@ def load_data_from_file(file_path: str) -> List[Reading]:
         reading = Reading(
             reading_id=str(row["ID"]),
             pipeline_name=str(row["stName"]),
-            chainage=float(row["CHAINAGE"]),
+            chainage=float(row["READING_CHAINAGE"]),
             psp_on=float(row["PSP_ON"]) if pd.notna(row["PSP_ON"]) else None,
             psp_off=float(row["PSP_OFF"]),
             reading_date=row["READING_DATE"],
