@@ -39,7 +39,8 @@ def run_predictive_maintenance_pipeline(input_file_path: str, output_report_path
             horizons = [1.0, 2.0, 3.0]
             forecasts = generate_standard_forecasts(latest_reading, trend, horizons)
             
-            chart_filename = f"output/charts/{pipeline_name}_km_{str(chainage).replace('.', '_')}.png"
+            sanitized_pipeline = pipeline_name.replace("/", "_").replace("\\", "_")
+            chart_filename = f"output/charts/{sanitized_pipeline}_km_{str(chainage).replace('.', '_')}.png"
             build_chainage_chart(sorted_readings, trend, forecasts, output_path=chart_filename)
             
     priority_list = generate_priority_list(latest_readings_with_trends)
@@ -48,11 +49,10 @@ def run_predictive_maintenance_pipeline(input_file_path: str, output_report_path
     print("🎉 Pipeline run execution completed successfully.")
 
 if __name__ == "__main__":
-    DATA_PATH = "sample_data.csv"
+    DATA_PATH = "CP_PSP_DATA.xlsx"
     REPORT_PATH = "output/maintenance_priorities.csv"
     
     if not os.path.exists(DATA_PATH):
         print(f"💡 Info: To run a live operational test, place a data file named '{DATA_PATH}' in this root directory.")
     else:
         run_predictive_maintenance_pipeline(DATA_PATH, REPORT_PATH, generate_charts=True)
-        

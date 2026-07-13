@@ -44,9 +44,13 @@ def validate_and_clean_schema(df: pd.DataFrame) -> pd.DataFrame:
         df_cleaned["READING_DATE"].isna()
     ]
     if not critical_nulls.empty:
-        print(f"⚠️ Warning: Dropping {len(critical_nulls)} rows due to null values or invalid formats in critical fields.")
         df_cleaned = df_cleaned.dropna(subset=["READING_CHAINAGE", "PSP_OFF", "READING_DATE"])
         
     df_cleaned = df_cleaned.sort_values(by=["stName", "READING_CHAINAGE", "READING_DATE"]).reset_index(drop=True)
     
+    duplicate_mask = df_cleaned.duplicated(subset=["stName", "READING_CHAINAGE", "READING_DATE"], keep="first")
+    if duplicate_mask.any():
+        print(f"🧹 Deduplication: Removing {duplicate_mask.sum()} duplicate inspection records taken on identical dates.")
+        df_cleaned = df_cleaned[~duplicate_mask].reset_index(drop=True)
+        
     return df_cleaned
